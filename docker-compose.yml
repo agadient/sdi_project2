@@ -1,0 +1,16 @@
+version: '2.1'
+
+services:
+  db:
+    image: mysql
+    healthcheck:
+      test: exit 0
+    ports:
+     - 5432:5432
+    environment:
+      - MYSQL_DATABASE=onlyairmen
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=admin
+    volumes:
+        - ./src/init.sql:/docker-entrypoint-initdb.d/init.sql
