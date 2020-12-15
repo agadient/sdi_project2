@@ -6,11 +6,11 @@ services:
     healthcheck:
       test: exit 0
     ports:
-     - 5432:5432
+     -  5432:3306
     environment:
       - MYSQL_DATABASE=onlyairmen
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=admin
       - MYSQL_ROOT_PASSWORD=admin
     volumes:
-        - ./src/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./src/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
