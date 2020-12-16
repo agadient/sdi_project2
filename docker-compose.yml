@@ -6,7 +6,7 @@ services:
     healthcheck:
       test: exit 0
     ports:
-     -  5432:3306
+     -  3306:3306
     environment:
       - MYSQL_DATABASE=onlyairmen
       - MYSQL_USER=admin
