@@ -43,7 +43,8 @@ public class AuthController {
             String cookieToken = phasher.generateCookieToken();
             Cookie cookie = new Cookie("sessionInfo", uid + "_" + cookieToken);
             authenticatedUIDs.put(uid, cookieToken);
-            cookie.setMaxAge(24*60*60);
+            cookie.setMaxAge(-1);
+            cookie.setHttpOnly(true);
             response.addCookie(cookie);
             return "Logged in!";
         }
@@ -72,6 +73,34 @@ public class AuthController {
 
         }
         return "Invalid session token!";
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(HttpServletResponse response, @CookieValue("sessionInfo") String sessionInfo) {
+        List<String> infoSplit = Arrays.asList(sessionInfo.split("_"));
+        if (infoSplit.size() != 2) {
+            try {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            } catch (Exception e) {
+
+            }
+            return "Invalid token!";
+        }
+        String uid = infoSplit.get(0);
+        String token = infoSplit.get(1);
+        if (authenticatedUIDs.get(uid).equals(token)) {
+            Cookie cookie = new Cookie("sessionInfo", "");
+            cookie.setMaxAge(0);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+            authenticatedUIDs.remove(uid);
+            return "Logged out!";
+        }
+        try {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+        }
+        return "Invalid token!";
     }
 
     private static class Login {
