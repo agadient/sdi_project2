@@ -59,7 +59,6 @@ public class AuthController {
         }
         return "Bad login!";
     }
-
     @GetMapping("/validateUser")
     public String validateUser(HttpServletResponse response, @CookieValue("sessionInfo") String sessionInfo) {
         List<String> infoSplit = Arrays.asList(sessionInfo.split("_"));
@@ -84,8 +83,12 @@ public class AuthController {
         return "Invalid session token!";
     }
 
+    @CrossOrigin(origins="http://localhost:3000", allowCredentials="true")
     @GetMapping("/logout")
     public String logoutUser(HttpServletResponse response, @CookieValue("sessionInfo") String sessionInfo) {
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Method", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
         List<String> infoSplit = Arrays.asList(sessionInfo.split("_"));
         if (infoSplit.size() != 2) {
             try {
