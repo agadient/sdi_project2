@@ -49,7 +49,6 @@ public class AuthController {
             String cookieToken = phasher.generateCookieToken();
             Cookie cookie = new Cookie("sessionInfo", uid + "_" + cookieToken);
             authenticatedUIDs.put(uid, cookieToken);
-            //response.setHeader("Set-Cookie", String.format("sessionInfo=%s; HttpOnly; SameSite=None", uid+"_"+cookieToken));
             cookie.setMaxAge(-1);
             cookie.setPath("/");
             cookie.setHttpOnly(true);
@@ -90,6 +89,7 @@ public class AuthController {
         response.setHeader("Access-Control-Allow-Method", "*");
         response.setHeader("Access-Control-Allow-Headers", "*");
         List<String> infoSplit = Arrays.asList(sessionInfo.split("_"));
+        System.out.println(sessionInfo);
         if (infoSplit.size() != 2) {
             try {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -100,10 +100,15 @@ public class AuthController {
         }
         String uid = infoSplit.get(0);
         String token = infoSplit.get(1);
+        System.out.println("here!");
+        for (String key : authenticatedUIDs.keySet()) {
+            System.out.println(key + " " + authenticatedUIDs.get(key));
+        }
         if (authenticatedUIDs.get(uid).equals(token)) {
             Cookie cookie = new Cookie("sessionInfo", "");
             cookie.setMaxAge(0);
             cookie.setHttpOnly(true);
+            cookie.setPath("/");
             response.addCookie(cookie);
             authenticatedUIDs.remove(uid);
             return "Logged out!";
