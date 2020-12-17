@@ -20,8 +20,14 @@ public class AuthController {
         this.repository = repository;
     }
 
+    @CrossOrigin(origins="http://localhost:3000", allowCredentials="true")
     @PostMapping("/login")
     public String login(HttpServletResponse response, @RequestBody Login login) {
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Method", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        //response.setHeader("SameSite", "none");
         Iterable<Map<String, Object>> passwordAndSalt;
         try {
             passwordAndSalt = repository.findAuthByUsername(login.getUsername());
@@ -43,9 +49,12 @@ public class AuthController {
             String cookieToken = phasher.generateCookieToken();
             Cookie cookie = new Cookie("sessionInfo", uid + "_" + cookieToken);
             authenticatedUIDs.put(uid, cookieToken);
+            //response.setHeader("Set-Cookie", String.format("sessionInfo=%s; HttpOnly; SameSite=None", uid+"_"+cookieToken));
             cookie.setMaxAge(-1);
+            cookie.setPath("/");
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
+
             return "Logged in!";
         }
         return "Bad login!";
