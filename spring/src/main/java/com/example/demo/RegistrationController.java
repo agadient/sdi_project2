@@ -1,11 +1,9 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
@@ -18,14 +16,19 @@ public class RegistrationController {
     public RegistrationController(UserRepository repository) {
         this.repository = repository;
     }
+    @CrossOrigin(origins="http://localhost:3000", allowCredentials="true")
     @PostMapping("/new")
-    public String newRegistration(@RequestBody Registration registration) {
+    public String newRegistration(HttpServletResponse response, @RequestBody Registration registration) {
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Method", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
         User newUser = new User();
         PasswordHasher.PasswordHashAndSalt phs = phasher.hashPassword(registration.getPassword());
         newUser.setUsername(registration.getUsername());
         newUser.setPassword_hash(phs.getHashedPassword());
         newUser.setSalt(phs.getSalt());
-        newUser.setLocation_id(registration.getLocationId());
+        System.out.println(registration.getLocation());
+        newUser.setLocation_id(registration.getLocation());
         newUser.setAge(registration.getAge());
         try {
             this.repository.save(newUser);
@@ -39,7 +42,7 @@ public class RegistrationController {
         String username;
         String password;
         Long age;
-        Long locationId;
+        Long location;
 
         public String getUsername() {
             return username;
@@ -65,12 +68,12 @@ public class RegistrationController {
             this.age = age;
         }
 
-        public Long getLocationId() {
-            return locationId;
+        public Long getLocation() {
+            return location;
         }
 
-        public void setLocationId(Long locationId) {
-            this.locationId = locationId;
+        public void setLocation(Long location) {
+            this.location = location;
         }
 
     }

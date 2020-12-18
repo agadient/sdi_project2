@@ -23,8 +23,8 @@ INSERT INTO hobbies(name) VALUES ('Spying');
 
 CREATE TABLE conversations(conversation_id serial, chat_log text NOT NULL, PRIMARY KEY(conversation_id));
 
-INSERT INTO conversations(chat_log) VALUES ('KarinaNotASpie: Hello handsome airmen. I like long walks on the beach and electronic schematics for the F-15E Strike Eagle. Wanna hang out?\r\n\r\nfighterPilotXOXO: Hey baby sure thing ever rode in an A-10 before?');
-INSERT INTO conversations(chat_log) VALUES ('crustyColonel: Better cut your hair airmen!\r\n\r\n MichaelScarn: Yeesh');
+INSERT INTO conversations(chat_log) VALUES ('KarinaNotASpie: Hello handsome airmen. I like long walks on the beach and electronic schematics for the F-15E Strike Eagle. Wanna hang out?\nfighterPilotXOXO: Hey baby sure thing ever rode in an A-10 before?\n');
+INSERT INTO conversations(chat_log) VALUES ('crustyColonel: Better cut your hair airmen!\n MichaelScarn: Yeesh\n');
 
 
 CREATE TABLE user_conversations (user_conversation_id serial, user_id BIGINT UNSIGNED NOT NULL, conversation_id BIGINT UNSIGNED NOT NULL,
