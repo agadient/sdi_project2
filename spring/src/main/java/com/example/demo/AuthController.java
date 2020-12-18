@@ -47,13 +47,8 @@ public class AuthController {
 
         if (validLogin) {
             String cookieToken = phasher.generateCookieToken();
-            Cookie cookie = new Cookie("sessionInfo", uid + "_" + cookieToken);
             authenticatedUIDs.put(uid, cookieToken);
-            cookie.setMaxAge(-1);
-            cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
-
+            response.setHeader("Set-Cookie", String.format("sessionInfo=%s; path=/; SameSite=None", uid+"_"+cookieToken));
             return "Logged in!";
         }
         return "Bad login!";
@@ -99,13 +94,15 @@ public class AuthController {
         }
         String uid = infoSplit.get(0);
         String token = infoSplit.get(1);
-
+        System.out.println(sessionInfo);
         if (authenticatedUIDs.get(uid).equals(token)) {
-            Cookie cookie = new Cookie("sessionInfo", "");
-            cookie.setMaxAge(0);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            response.addCookie(cookie);
+            response.setHeader("Set-Cookie", "sessionInfo=\"\"; Max-Age=0; path=/; SameSite=None");
+
+            //Cookie cookie = new Cookie("sessionInfo", "");
+            //cookie.setMaxAge(0);
+            //cookie.setHttpOnly(true);
+            //cookie.setPath("/");
+            //response.addCookie(cookie);
             authenticatedUIDs.remove(uid);
             return "Logged out!";
         }
