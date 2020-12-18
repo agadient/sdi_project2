@@ -56,3 +56,14 @@ services:
     ports:
      - 8081:8080
     
+  only-airmen-react:
+      image: violinalan/only-airmen-react
+      command: npm start
+      depends_on:
+        - db
+        - auth
+        - chat
+        - profiles
+        - search
+      ports:
+        - 3000:3000
